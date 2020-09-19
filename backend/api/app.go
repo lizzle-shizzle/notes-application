@@ -77,6 +77,26 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 
 func (a *App) NotesHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
+	case "GET":
+		notes, err := FetchNotes(a.Client)
+		if err != nil {
+			switch err {
+			case sql.ErrNoRows:
+				fmt.Println("No notes found")
+				respondWithError(w, http.StatusNotFound, "No notes found")
+			default:
+				fmt.Println("Failed to fetch notes")
+				respondWithError(w, http.StatusInternalServerError, err.Error())
+			}
+			return
+		}
+
+		if len(notes) <= 0 {
+			fmt.Println("No notes found")
+			respondWithError(w, http.StatusNotFound, "No notes found")
+		} else {
+			respondWithJSON(w, http.StatusOK, notes)
+		}
 	case "POST":
 		var note Note
 
