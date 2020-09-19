@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -53,5 +54,53 @@ func (a *App) Initialize() error {
 	}
 	a.Client.DB = database
 
+	// Initialize routes
+	http.HandleFunc("/notes", a.NotesHandler)
+
 	return nil
+}
+
+func respondWithError(w http.ResponseWriter, code int, message string) {
+	respondWithJSON(w, code, map[string]string{"error": message})
+}
+
+func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+	response, err := json.Marshal(payload)
+	if err != nil {
+		log.Printf("Failed to marshal response body: %s\n", err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	w.Write(response)
+}
+
+func (a *App) NotesHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		var note Note
+
+		decoder := json.NewDecoder(r.Body)
+		if r.Body == nil {
+			log.Println("Create note failed - Invalid payload request: empty body")
+			respondWithError(w, http.StatusBadRequest, "Invalid payload request: empty body")
+			return
+		}
+		if err := decoder.Decode(&note); err != nil {
+			log.Printf("Failed to decode note: %s\n", err)
+			respondWithError(w, http.StatusBadRequest, err.Error())
+			return
+		}
+		defer r.Body.Close()
+
+		msg, err := CreateNote(a.Client, note)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		respondWithJSON(w, http.StatusCreated, msg)
+	default:
+		respondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
+	}
 }
