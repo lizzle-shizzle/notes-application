@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"log"
 	"os"
+	"time"
 
 	_ "github.com/lib/pq"
 	"github.com/lizzle-shizzle/notes-application/backend/api"
@@ -23,6 +24,19 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to initialize service: %s\n", err)
 		os.Exit(1)
+	}
+
+	// Wait for instance to be ready
+	connected := false
+	for !connected {
+		pErr := a.Client.DB.Ping()
+		if pErr != nil {
+			log.Println("Postgres client trying to connect...")
+			time.Sleep(2 * time.Second)
+		} else {
+			log.Println("Postgres client connected")
+			connected = true
+		}
 	}
 
 	file, err := os.Open(os.Getenv("SQL_INIT_PATH"))
