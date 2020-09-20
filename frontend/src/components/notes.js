@@ -110,13 +110,13 @@ class Notes extends React.Component {
                         <label>
                             <b>My notes:</b>
                         </label>
-                        <table>
+                        <table style={{ width: "50%", marginLeft: "35%", textAlign: "left", borderSpacing: "1em 1em" }}>
                             {this.state.notes !== undefined && this.state.notes.map((note, index) => {
                                 const { id, text, created_timestamp } = note
                                 return (
                                     <tr key={id}>
                                         <td></td>
-                                        <td>{created_timestamp.substring(0, 10)}</td>
+                                        <td style={{ width: "15%" }}>{created_timestamp.substring(0, 10)}</td>
                                         <td>{text}</td>
                                     </tr>
                                 )
