@@ -1,0 +1,55 @@
+version: '3'
+services:
+  notes-db:
+    image: "centos/postgresql-95-centos7"
+    environment:
+      - POSTGRESQL_USER=admin
+      - POSTGRESQL_PASSWORD=admin
+      - POSTGRESQL_DATABASE=postgres
+    ports:
+      - "6002:5432"
+    networks:
+      main:
+        aliases:
+          - notes-db
+  notes-api:
+    image: "notes-api"
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=notes-db
+      - DB_DATABASE=postgres
+      - DB_USERNAME=admin
+      - DB_PORT=5432
+      - DB_PASSWORD=admin
+      - SQL_INIT_PATH=./init.sql
+    depends_on:
+      - notes-db
+    links:
+      - notes-db
+    networks:
+      main:
+        aliases:
+          - notes-api
+    tty: true
+  notes-frontend:
+    image: "notes-frontend"
+    volumes:
+      - './frontend/:/app'
+      - './frontend/app/node_modules'
+    ports:
+      - "3001:3000"
+    environment:
+      - REACT_APP_NOTES_API_URL=http://localhost:8080
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - notes-api
+    links:
+      - notes-api
+    networks:
+      main:
+        aliases:
+          - notes-api
+    tty: true
+networks:
+  main:
