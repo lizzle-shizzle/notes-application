@@ -4,6 +4,7 @@ import { Col, Label, Row } from "reactstrap";
 class Notes extends React.Component {
     constructor(props) {
         this.state = {
+            notes: [],
             noteText: ""
         };
         this.handleChange = this.handleChange.bind(this);
@@ -41,6 +42,7 @@ class Notes extends React.Component {
                             this.setState({
                                 noteText: ""
                             })
+                            this.fetchNotes()
                         })
                         .catch(err => {
                             console.log("err " + err);
@@ -55,6 +57,29 @@ class Notes extends React.Component {
             .catch(err => {
                 console.log(err);
             });
+    }
+
+    fetchNotes() {
+        fetch(
+            `${process.env.REACT_APP_NOTES_API_URL}/notes`
+        )
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    console.log("error");
+                    console.log(response);
+                }
+            })
+            .then(json => {
+                this.setState({
+                    notes: json
+                });
+            });
+    }
+
+    componentWillMount() {
+        this.fetchNotes()
     }
 
     render() {
@@ -78,6 +103,25 @@ class Notes extends React.Component {
                         >
                             Create note
                     </button>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col size={{ xs: 12 }}>
+                        <label>
+                            <b>My notes:</b>
+                        </label>
+                        <table>
+                            {this.state.notes !== undefined && this.state.notes.map((note, index) => {
+                                const { id, text, created_timestamp } = note
+                                return (
+                                    <tr key={id}>
+                                        <td></td>
+                                        <td>{created_timestamp.substring(0, 10)}</td>
+                                        <td>{text}</td>
+                                    </tr>
+                                )
+                            })}
+                        </table>
                     </Col>
                 </Row>
             </div>
