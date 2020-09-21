@@ -14,17 +14,20 @@ A simple note taking application where you can create a note, which gets saved t
 ### Endpoints
 - POST localhost:8080/notes
 	- Request body:
-	```
+```
 	{
 		"text": "My first note"
 	}
-	```
+```
 - GET localhost:8080/notes
     - Response:
-    ```
-	{
-		"id": 1,
-		"text": "My first note",
-		"created_timestamp": "2020-01-01T12:00:00"
-	}
-	```
+```
+	[
+		{
+			"id": 1,
+			"text": "My first note",
+			"created_timestamp": "2020-01-01T12:00:00"
+		}
+	]
+```
+	
