@@ -3,6 +3,7 @@ import { Col, Label, Row } from "reactstrap";
 
 class Notes extends React.Component {
     constructor(props) {
+        super(props);
         this.state = {
             notes: [],
             noteText: ""
