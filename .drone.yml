@@ -1,0 +1,74 @@
+---
+kind: pipeline
+type: docker
+name: test
+
+trigger:
+  event:
+    - push
+
+steps:
+- name: test
+  image: alpine
+  commands:
+  - echo "hello"
+
+---
+kind: pipeline
+name: notify-test
+
+steps:
+- name: notify
+  image: plugins/slack
+  settings:
+    channel: test-reminders
+    webhook:
+      from_secret: ORG_SLACK_WEBHOOK
+  when:
+    status: [success]
+    event:  [push]
+
+depends_on:
+- test
+
+---
+kind: pipeline
+type: docker
+name: automated
+
+trigger:
+  event:
+    - cron
+  cron:
+    - hourly
+
+steps:
+- name: update
+  image: plugins/git
+  commands:
+  - export BRANCH_NAME=update-test-$(date '+%Y-%m-%d')
+  - echo $DRONE_REPO
+  - sed -i 's/\(release_version *= *\).*/\1"'${DRONE_BUILD_NUMBER}'"/' ./test.tf
+  - sed -i 's/\(release_version *= *\).*/\1"'${DRONE_BUILD_NUMBER}'"/' ./test2.tf
+  - git add ./test.tf ./test2.tf
+  - git commit -m "Test $(date '+%Y-%m-%d')"
+  - git push origin HEAD:$BRANCH_NAME
+  - echo $BRANCH_NAME
+
+---
+kind: pipeline
+name: notify-automated
+
+steps:
+- name: notify
+  image: plugins/slack
+  settings:
+    channel: test-reminders
+    webhook:
+      from_secret: ORG_SLACK_WEBHOOK
+  when:
+    status: [failure, success]
+    event:  [cron]
+
+depends_on:
+- default
