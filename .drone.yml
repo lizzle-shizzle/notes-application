@@ -15,24 +15,6 @@ steps:
 
 ---
 kind: pipeline
-name: notify-test
-
-steps:
-- name: notify
-  image: plugins/slack
-  settings:
-    channel: test-reminders
-    webhook:
-      from_secret: ORG_SLACK_WEBHOOK
-  when:
-    status: [success]
-    event:  [push]
-
-depends_on:
-- test
-
----
-kind: pipeline
 type: docker
 name: automated
 
@@ -54,21 +36,3 @@ steps:
   - git commit -m "Test $(date '+%Y-%m-%d')"
   - git push origin HEAD:$BRANCH_NAME
   - echo $BRANCH_NAME
-
----
-kind: pipeline
-name: notify-automated
-
-steps:
-- name: notify
-  image: plugins/slack
-  settings:
-    channel: test-reminders
-    webhook:
-      from_secret: ORG_SLACK_WEBHOOK
-  when:
-    status: [failure, success]
-    event:  [cron]
-
-depends_on:
-- default
