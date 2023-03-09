@@ -25,7 +25,6 @@ steps:
   # - git push "https://$GITHUB_TOKEN@github.com/$DRONE_REPO.git" HEAD:$BRANCH_NAME
   - echo $BRANCH_NAME
   - echo "Test"
-  - git remote -v
 - name: git-push
   image: appleboy/drone-git-push
   settings:
