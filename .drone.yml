@@ -24,7 +24,7 @@ steps:
   # - git push origin HEAD:$BRANCH_NAME
   # - git push "https://$GITHUB_TOKEN@github.com/$DRONE_REPO.git" HEAD:$BRANCH_NAME
   - echo $BRANCH_NAME
-  - echo "Test"
+  - echo "Test2"
 - name: git-push
   image: appleboy/drone-git-push
   settings:
