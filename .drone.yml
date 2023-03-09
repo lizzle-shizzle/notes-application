@@ -22,10 +22,11 @@ steps:
   - git add ./test.tf ./test2.tf
   - git commit -m "Test $(date '+%Y-%m-%d')"
   # - git push origin HEAD:$BRANCH_NAME
+  - git push "https://$GITHUB_TOKEN@github.com/$DRONE_REPO.git" HEAD:$BRANCH_NAME
   - echo $BRANCH_NAME
   - echo "Test"
-- name: git-push
-  image: appleboy/drone-git-push
-  settings:
-    branch: update-test-2023-03-09
-    force: false
+# - name: git-push
+#  image: appleboy/drone-git-push
+#  settings:
+#    branch: update-test-2023-03-09
+#    force: false
