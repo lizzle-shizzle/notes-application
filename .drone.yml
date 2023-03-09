@@ -34,4 +34,4 @@ steps:
     ssh_key:
       from_secret: GITHUB_SSH_KEY
     branch: update-test-2023-03-09
-    force: false
+    force: true
