@@ -31,7 +31,7 @@ steps:
   settings:
     # remote_name: origin
     remote:
-      from_secret: DRONE_REPO
+      from_secret: GITHUB_SSH_REPO
     ssh_key:
       from_secret: GITHUB_SSH_KEY
     branch: update-test-2023-03-09
