@@ -19,3 +19,4 @@ steps:
   - git commit -m "Test $(date '+%Y-%m-%d')"
   - git push origin HEAD:$BRANCH_NAME
   - echo $BRANCH_NAME
+  - echo "Test"
