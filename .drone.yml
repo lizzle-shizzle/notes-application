@@ -32,6 +32,6 @@ steps:
     remote:
       from_secret: GH_REPO
     ssh_key:
-      from_secret: GITHUB_SSH_KEY
+      from_secret: GH_SSH_KEY
     branch: update-test-2023-03-09
     force: true
