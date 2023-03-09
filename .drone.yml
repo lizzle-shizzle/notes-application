@@ -21,6 +21,6 @@ steps:
   - sed -i 's/\(release_version *= *\).*/\1"'${DRONE_BUILD_NUMBER}'"/' ./test2.tf
   - git add ./test.tf ./test2.tf
   - git commit -m "Test $(date '+%Y-%m-%d')"
-  - git push origin HEAD:$BRANCH_NAME
+  # - git push origin HEAD:$BRANCH_NAME
   - echo $BRANCH_NAME
   - echo "Test"
