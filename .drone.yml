@@ -14,6 +14,9 @@ trigger:
 steps:
 - name: update
   image: plugins/git
+  environment:
+    GITHUB_TOKEN:
+      from_secret: GITHUB_TOKEN
   commands:
   - export BRANCH_NAME=update-test-$(date '+%Y-%m-%d')
   - echo $DRONE_REPO
